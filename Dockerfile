@@ -15,6 +15,9 @@ LABEL io.k8s.description="Platform for building golang that accept live code rel
       io.openshift.s2i.scripts-url="image:///usr/local/s2i"
 
 # Install required packages here:
+RUN apt-get update -y \
+  && apt-get install -y rsync
+
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Copy the S2I scripts to /usr/local/s2i
