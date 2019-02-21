@@ -1,0 +1,25 @@
+#!/bin/bash -e
+#
+# S2I run script for the 'golang' image.
+# The run script executes the server that runs your application.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+APP_NAME=`ls /tmp/src`
+cd /go/src/${APP_NAME}
+
+dep ensure
+
+if [ "${APP_ENV}" = "production" ]; then
+  echo "Executing in production mode"
+
+  go build -o main
+  ./main
+else
+  echo "Executing in development (hot code) mode"
+
+  go get github.com/githubnemo/CompileDaemon
+  CompileDaemon -build="go build -o main" -command="./main"
+fi
