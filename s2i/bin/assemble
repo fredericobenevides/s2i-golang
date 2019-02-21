@@ -13,6 +13,23 @@ if [[ "$1" == "-h" ]]; then
 fi
 
 echo "---> Installing application source..."
-cp -Rf /tmp/src/. /go/src
+
+# Move the envioronment file to s2i folder
+env_openshift="env_openshift.sh"
+mv /tmp/src/${env_openshift} /go/src/
+
+# Load environment APP_FOLDER
+. /go/src/${env_openshift}
+
+# Create the app's folder
+cd /tmp/src
+mkdir -p ${APP_FOLDER}
+
+# Move all the files to app's folder except the app folder.
+find . -maxdepth 1 -mindepth 1 -not -name ${APP_ROOT_FOLDER} -print0 | xargs -0 mv -t ${APP_FOLDER}
+
+# Move the app's folder to go's folder
+mv /tmp/src/${APP_ROOT_FOLDER} /go/src
 
 echo "---> Building application from source..."
+

@@ -7,9 +7,11 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
-APP_NAME=`ls /tmp/src`
-cd /go/src/${APP_NAME}
+# Load environment APP_FOLDER
+env_openshift="env_openshift.sh"
+. /go/src/${env_openshift}
 
+cd /go/src/${APP_FOLDER}
 dep ensure
 
 if [ "${APP_ENV}" = "production" ]; then

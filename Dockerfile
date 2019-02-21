@@ -4,7 +4,7 @@ FROM golang:1.11.5
 LABEL maintainer="Frederico Benevides <fredbene@gmail.com>"
 
 # Rename the builder environment variable to inform users about application you provide them
-ENV BUILDER_VERSION 0.1
+ENV BUILDER_VERSION 1.0
 ENV GOCACHE /tmp
 
 # Set labels used in OpenShift to describe the builder image
@@ -20,14 +20,11 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 # Copy the S2I scripts to /usr/local/s2i
 COPY ./s2i/bin/ /usr/local/s2i
 
-# Drop the root user and make the content of /opt/app-root owned by user 1001
+# Drop the root user and make the content of /go owned by user 1000
 RUN chown -R 1000:1000 /go
 
-RUN groupadd -g 1000 appuser \
-  && useradd -r -u 1000 -g appuser appuser
-
 # This default user is created in the openshift/base-centos7 image
-USER appuser
+USER 1000
 
 # Set the default port for applications built using this image
 EXPOSE 8080

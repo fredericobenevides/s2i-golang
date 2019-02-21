@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"test.com/myapp/hw"
+
 	"github.com/go-chi/chi"
 )
 
@@ -11,7 +13,7 @@ func main() {
 	r := chi.NewRouter()
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello world"))
+		w.Write([]byte(hw.HelloWorld()))
 	})
 
 	port := "8080"
