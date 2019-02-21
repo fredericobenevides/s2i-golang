@@ -31,7 +31,7 @@ To run this image in development mode:
 
 To run in production mode:
 
-`$ docker run -d -p 8080:8080 -e APP_ENV=production s2i-golang-app
+`$ docker run -d -p 8080:8080 -e APP_ENV=production s2i-golang-app`
 
 To run manually access with the following command
 
