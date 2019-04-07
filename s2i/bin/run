@@ -7,6 +7,9 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
+# Load nss_wrapper
+. /go/nss_wrapper.sh
+
 # Load environment APP_FOLDER
 env_openshift="env_openshift.sh"
 . /go/src/${env_openshift}

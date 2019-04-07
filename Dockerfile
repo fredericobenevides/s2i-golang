@@ -16,15 +16,24 @@ LABEL io.k8s.description="Platform for building golang that accept live code rel
 
 # Install required packages here:
 RUN apt-get update -y \
-  && apt-get install -y rsync
+  && apt-get install -y libnss-wrapper gettext \
+  && apt-get install -y rsync \
+  && apt-get clean
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+# Copy file to use with nss_wrapper
+COPY files/nss_wrapper.sh /go/nss_wrapper.sh
+COPY files/passwd.template /go/passwd.template
 
 # Copy the S2I scripts to /usr/local/s2i
 COPY ./s2i/bin/ /usr/local/s2i
 
 # Drop the root user and make the content of /go owned by user 1000
-RUN chown -R 1000:1000 /go
+# RUN chown -R 1000:1000 /go
+RUN chown -R 1000:0 /go
+RUN chmod -R g+rw /go
+RUN find /go -type d -exec chmod g+x {} +
 
 # This default user is created in the openshift/base-centos7 image
 USER 1000
