@@ -7,6 +7,11 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
+# Change the owner to the current user
+chown -R $(id -u):0 /go
+chmod -R g+rw /go
+find /go -type d -exec chmod g+x {} +
+
 # Load nss_wrapper
 . /go/nss_wrapper.sh
 
