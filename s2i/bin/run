@@ -7,11 +7,6 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
-# Change the owner to the current user
-chown -R $(id -u):0 /go
-chmod -R g+rw /go
-find /go -type d -exec chmod g+x {} +
-
 # Load nss_wrapper
 . /go/nss_wrapper.sh
 
@@ -20,7 +15,12 @@ env_openshift="env_openshift.sh"
 . /go/src/${env_openshift}
 
 cd /go/src/${APP_FOLDER}
-dep ensure
+
+RUN_DEP="${RUN_DEP:=false}"
+if [ "${RUN_DEP}" = true ]; then
+  echo "Downloading dependencies"
+  dep ensure
+fi
 
 if [ "${APP_ENV}" = "production" ]; then
   echo "Executing in production mode"

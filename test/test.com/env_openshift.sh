@@ -5,5 +5,5 @@
 # define the app root folder from /go/src/${root_folder}
 export APP_ROOT_FOLDER=test.com
 
-# define the all url to the app name
+# define the app_folder
 export APP_FOLDER=${APP_ROOT_FOLDER}/myapp

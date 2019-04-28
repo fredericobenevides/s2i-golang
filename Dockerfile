@@ -29,6 +29,14 @@ COPY files/passwd.template /go/passwd.template
 # Copy the S2I scripts to /usr/local/s2i
 COPY ./s2i/bin/ /usr/local/s2i
 
+# Drop the root user and make the content of /go owned by user 1000
+RUN chown -R 0 /go
+RUN chmod -R g+rw /go
+RUN find /go -type d -exec chmod g+x {} +
+
+# This default user
+USER 1001
+
 # Set the default port for applications built using this image
 EXPOSE 8080
 
