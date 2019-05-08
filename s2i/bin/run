@@ -29,7 +29,5 @@ if [ "${APP_ENV}" = "production" ]; then
   ./main
 else
   echo "Executing in development (hot code) mode"
-
-  go get github.com/githubnemo/CompileDaemon
-  CompileDaemon -build="go build -o main" -command="./main"
+  /go/.air
 fi

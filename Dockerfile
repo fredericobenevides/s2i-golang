@@ -20,11 +20,17 @@ RUN apt-get update -y \
   && apt-get install -y rsync \
   && apt-get clean
 
+# Install dep
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
+# Install air
+RUN curl -fLo /go/.air \
+    https://raw.githubusercontent.com/cosmtrek/air/master/bin/linux/air \
+    && chmod +x /go/.air
+
 # Copy file to use with nss_wrapper
-COPY files/nss_wrapper.sh /go/nss_wrapper.sh
-COPY files/passwd.template /go/passwd.template
+COPY files/nss_wrapper.sh /go
+COPY files/passwd.template /go
 
 # Copy the S2I scripts to /usr/local/s2i
 COPY ./s2i/bin/ /usr/local/s2i
