@@ -16,10 +16,12 @@ fi
 echo "---> Installing application source..."
 
 # Load environment ${INSTALL_URL}
-env_openshift="/tmp/src/env_openshift.sh"
+env_openshift="/tmp/src/.env_openshift.sh"
 . ${env_openshift}
 
 mkdir -p ${HOME}/${INSTALL_URL}
+
+mv ${env_openshift} ${HOME}/${INSTALL_URL}
 mv /tmp/src/* ${HOME}/${INSTALL_URL}
 
 fix-permissions ${HOME}

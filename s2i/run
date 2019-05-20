@@ -8,7 +8,7 @@
 #
 
 # Load environment ${INSTALL_URL}
-env_openshift=`find . -name "env_openshift.sh"`
+env_openshift=`find . -name ".env_openshift.sh"`
 . ${env_openshift}
 
 echo "Acessing app directory ${HOME}/${INSTALL_URL}"
