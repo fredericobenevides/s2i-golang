@@ -26,5 +26,5 @@ if [ "${APP_ENV}" = "production" ]; then
   ./main
 else
   echo "Executing in development (hot code) mode"
-  ${APP_ROOT}/.air
+  ${GOBIN}/.air
 fi

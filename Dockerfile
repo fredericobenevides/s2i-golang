@@ -1,48 +1,49 @@
-FROM openshift/base-centos7
+FROM alpine:3.9
 
 # Put the maintainer name in the image metadata
 LABEL maintainer="Frederico Benevides <fredbene@gmail.com>"
 
 ENV \
-  APP_ROOT="/opt/app-root" \
-  GO_VERSION="1.12" \
-  GO_PATCH_VERSION="5" \
-  GOPATH="/opt/app-root" \
-  GOROOT="/opt/app-root/go" \
-  GOBIN="/opt/app-root/go/bin" \
-  PATH="${PATH}:/opt/app-root/go/bin"
+  APP_ROOT=/opt/app-root \
+  GOPATH=/opt/app-root \
+  GOBIN=/opt/app-root/bin \
+  HOME=/opt/app-root/src \
+  STI_SCRIPTS_PATH=/usr/local/s2i \
+  PATH=${PATH}:/opt/app-root/bin
 
 # Set labels used in OpenShift to describe the builder image
 LABEL io.k8s.description="Platform for building golang that accept live code reloading in development mode" \
-      io.k8s.display-name="Go ${GO_VERSION}" \
+      io.k8s.display-name="Go ${go version}" \
       io.openshift.expose-services="8080:http" \
+      io.openshift.s2i.scripts-url="image:///usr/local/s2i" \
       io.openshift.tags="builder,s2i,go,golang,go${GO_VERSION}"
 
 # Install required packages here:
-RUN \
-  yum install -y rsync \
-  && yum clean all -y
+RUN apk update \
+  && apk add --no-cache bash curl findutils git go make musl-dev rsync
 
-# Install go
-RUN \
-  curl -L https://dl.google.com/go/go${GO_VERSION}.${GO_PATCH_VERSION}.linux-amd64.tar.gz  \
-  | tar -xz -C ${APP_ROOT}
+RUN mkdir -p ${APP_ROOT}/src ${APP_ROOT}/bin
 
 # Install dep
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # Install air
-RUN curl -fLo ${APP_ROOT}/.air \
+RUN curl -fLo ${GOBIN}/.air \
     https://raw.githubusercontent.com/cosmtrek/air/master/bin/linux/air \
-    && chmod +x ${APP_ROOT}/.air
+    && chmod +x ${GOBIN}/.air
 
 # Copy the S2I scripts to $STI_SCRIPTS_PATH
 COPY ./s2i/ $STI_SCRIPTS_PATH
 
-# Drop the root user and make the content of /go owned by user 1000
-RUN chown -R 1001:0 ${APP_ROOT}
-RUN chmod -R g+rw ${APP_ROOT}
-RUN find ${APP_ROOT} -type d -exec chmod g+x {} +
+# Copy extra files to the image.
+COPY ./files/fix-permissions /usr/local/bin
+
+# Add the default user and change permission
+RUN \
+    adduser -u 1001 -S -G root -h ${HOME} -s /sbin/nologin default \
+    && chown -R 1001:0 ${APP_ROOT}
+
+WORKDIR ${HOME}
 
 # This default user
 USER 1001
