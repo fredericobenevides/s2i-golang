@@ -13,7 +13,7 @@ ENV \
 
 # Set labels used in OpenShift to describe the builder image
 LABEL io.k8s.description="Platform for building golang that accept live code reloading in development mode" \
-      io.k8s.display-name="Go ${go version}" \
+      io.k8s.display-name="Go 1.11.5" \
       io.openshift.expose-services="8080:http" \
       io.openshift.s2i.scripts-url="image:///usr/local/s2i" \
       io.openshift.tags="builder,s2i,go,golang,go${GO_VERSION}"
