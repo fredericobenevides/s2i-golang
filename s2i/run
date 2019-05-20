@@ -7,16 +7,13 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
-# Load nss_wrapper
-. /go/nss_wrapper.sh
+# Load environment ${INSTALL_URL}
+env_openshift=`find . -name "env_openshift.sh"`
+. ${env_openshift}
 
-# Load environment APP_FOLDER
-env_openshift="env_openshift.sh"
-. /go/src/${env_openshift}
+echo "Acessing app directory ${HOME}/${INSTALL_URL}"
+pushd ${HOME}/${INSTALL_URL}
 
-cd /go/src/${APP_FOLDER}
-
-RUN_DEP="${RUN_DEP:=false}"
 if [ "${RUN_DEP}" = true ]; then
   echo "Downloading dependencies"
   dep ensure
@@ -29,5 +26,5 @@ if [ "${APP_ENV}" = "production" ]; then
   ./main
 else
   echo "Executing in development (hot code) mode"
-  /go/.air
+  ${APP_ROOT}/.air
 fi

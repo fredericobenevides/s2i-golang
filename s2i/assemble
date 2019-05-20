@@ -1,0 +1,25 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'golang' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+# If the 'golang' assemble script is executed with the '-h' flag, print the usage.
+
+if [[ "$1" == "-h" ]]; then
+	exec /usr/local/s2i/usage
+fi
+
+echo "---> Installing application source..."
+
+# Load environment ${INSTALL_URL}
+env_openshift="/tmp/src/env_openshift.sh"
+. ${env_openshift}
+
+mkdir -p ${HOME}/${INSTALL_URL}
+mv /tmp/src/* ${HOME}/${INSTALL_URL}
+
+fix-permissions ${HOME}
